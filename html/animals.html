@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employees Page</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='../static/animals.css')}}"
+    />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+  <body>
+    <header class="header">
+      <a href="/" class="home-btn">Crazy Critters</a>
+      <div class="links">
+        <a href="./employees.html">Employees</a>
+        <a href="./animals.html">Animals</a>
+        <a href="./membership.html">Memberships</a>
+        <a href="./guests.html">Guests</a>
+        <a href="./inventory.html">Inventory</a>
+        <a href="./events.html">Events</a>
+        <a href="./habitats.html">Habitats</a>
+        <a href="./event_attendance.html">EventAttendance</a>
+        <button>Visit Us</button>
+      </div>
+    </header>
+    <h2>Visit Our Friends</h2>
+    <div class="main">
+      <p>
+        Here at Crazy Critters, we've got a zoo-full of amazing animals from all
+        over the world—each with their own unique charm, quirks, and
+        larger-than-life personalities! From roaring lions to playful bears, our
+        big cats and cuddly-yet-powerful mammals are ready to show off their
+        wild side. Spot the gentle giants like our giraffes stretching for
+        snacks, or say hello to the mini marvels like our curious meerkats and
+        hopping kangaroos! If you love the creepy and crawly, check out our
+        reptile house, where snakes, lizards, and turtles slither, scamper, and
+        chill out. Meet our colorful parrots, majestic eagles, and waddling
+        penguins who rule the skies (or at least think they do!). From elephants
+        who love a good dust bath to hippos who spend their days splashing
+        around, our big buddies never fail to impress. And So Many More! Whether
+        they swing, stomp, slither, or soar, every critter at Crazy Critters has
+        a story to tell. Come meet them and find your new favorite furry (or
+        feathery… or scaly) friend! Which Crazy Critter will steal your heart
+        today?
+      </p>
+      <div class="table-container">
+        <div class="table-btns">
+          <button type="button" class="filter-btn" data-animal="Tiger">
+            Tigers
+          </button>
+          <button type="button" class="filter-btn" data-animal="Whale">
+            Whale
+          </button>
+          <button type="button" class="filter-btn" data-animal="Monkey">
+            Monkeys
+          </button>
+          <button type="button" class="filter-btn" data-animal="Hippo">
+            Hippo
+          </button>
+          <button type="button" class="filter-btn" data-animal="Shark">
+            Shark
+          </button>
+          <button type="button" class="filter-btn" data-animal="Rhino">
+            Rhino
+          </button>
+          <button type="button" class="filter-btn" data-animal="Sea Turtle">
+            Sea Turtle
+          </button>
+        </div>
+
+        <!-- Display the table passed from Flask -->
+        <div id="animals-table-container">
+          {{ table_html | safe }}
+          <!-- The safe filter ensures that HTML is rendered -->
+        </div>
+      </div>
+    </div>
+    <!-- JS file to process the animal table query -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".filter-btn").forEach((button) => {
+          button.addEventListener("click", function () {
+            const animalType = this.dataset.animal; // Get the animal name from button data attribute
+
+            fetch("/filter_animals", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ animal_type: animalType }),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                document.getElementById("animals-table-container").innerHTML =
+                  data.table_html;
+              })
+              .catch((error) => console.error("Error:", error));
+          });
+        });
+      });
+    </script>
+
+    <footer class="home-footer">
+      <h2 class="home-footer-h2">Follow Us On Social Media</h2>
+      <!-- Social media icon section -->
+      <a href="#"><i class="bx bxl-tiktok"></i></a>
+      <a href="#"><i class="bx bxl-instagram"></i></a>
+      <a href="#"><i class="bx bxl-facebook"></i></a>
+      <a href="#"><i class="bx bxl-twitter"></i></a>
+      <a href="#"><i class="bx bxl-reddit"></i></a>
+      <!-- End of footer section  -->
+      <!-- End of home page styling -->
+    </footer>
+  </body>
+</html>
