@@ -51,6 +51,9 @@
       </p>
       <div class="table-container">
         <div class="table-btns">
+          <button class="filter-btn" data-animal="*" id="all-button">
+            All
+          </button>
           <button type="button" class="filter-btn" data-animal="Tiger">
             Tigers
           </button>
@@ -84,23 +87,35 @@
     <!-- JS file to process the animal table query -->
     <script>
       document.addEventListener("DOMContentLoaded", function () {
+        // Function to fetch filtered animals
+        function fetchFilteredAnimals(animalType) {
+          fetch("/filter_animals", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ animal_type: animalType }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              document.getElementById("animals-table-container").innerHTML =
+                data.table_html;
+            })
+            .catch((error) => console.error("Error:", error));
+        }
+
+        // Event listener for filter buttons
         document.querySelectorAll(".filter-btn").forEach((button) => {
           button.addEventListener("click", function () {
-            const animalType = this.dataset.animal; // Get the animal name from button data attribute
-
-            fetch("/filter_animals", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ animal_type: animalType }),
-            })
-              .then((response) => response.json())
-              .then((data) => {
-                document.getElementById("animals-table-container").innerHTML =
-                  data.table_html;
-              })
-              .catch((error) => console.error("Error:", error));
+            const animalType = this.dataset.animal;
+            fetchFilteredAnimals(animalType);
           });
         });
+
+        // Event listener for "All" button (must be outside the loop)
+        document
+          .getElementById("all-button")
+          .addEventListener("click", function () {
+            fetchFilteredAnimals(""); // Empty string to fetch all animals
+          });
       });
     </script>
 

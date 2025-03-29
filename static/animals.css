@@ -10,12 +10,11 @@
 }
 
 body {
-  /* background-color: #e88873;4 */
   background-color: var(--backup-color);
 }
 
 .header {
-  background-color: #e88873;
+  background-color: var(--primary-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -73,6 +72,7 @@ h2 {
   font-size: 20px;
   line-height: 40px;
   padding-left: 30px;
+  
 }
 
 .main img {
