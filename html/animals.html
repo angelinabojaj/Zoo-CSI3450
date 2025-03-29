@@ -4,24 +4,28 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Employees Page</title>
-    <link rel="stylesheet" href="/css/animals.css" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='../static/animals.css')}}"
+    />
     <link
       href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
       rel="stylesheet"
     />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
   <body>
     <header class="header">
-      <a href="./index.html" class="home-btn">Crazy Critters</a>
+      <a href="/" class="home-btn">Crazy Critters</a>
       <div class="links">
         <a href="./employees.html">Employees</a>
         <a href="./animals.html">Animals</a>
         <a href="./membership.html">Memberships</a>
-        <a href="./events.html">Guests</a>
+        <a href="./guests.html">Guests</a>
         <a href="./inventory.html">Inventory</a>
         <a href="./events.html">Events</a>
-        <a href="./Habitats.html">Habitats</a>
-        <a href="./event-attendance.html">EventAttendance</a>
+        <a href="./habitats.html">Habitats</a>
+        <a href="./event_attendance.html">EventAttendance</a>
         <button>Visit Us</button>
       </div>
     </header>
@@ -45,8 +49,76 @@
         feathery… or scaly) friend! Which Crazy Critter will steal your heart
         today?
       </p>
-      <img src="../assets/animal-city-zoo-zoo-ai-generated-photo.jpg" alt="">
+      <div class="table-container">
+        <div class="table-btns">
+          <button class="filter-btn" data-animal="*" id="all-button">
+            All
+          </button>
+          <button type="button" class="filter-btn" data-animal="Tiger">
+            Tigers
+          </button>
+          <button type="button" class="filter-btn" data-animal="Whale">
+            Whale
+          </button>
+          <button type="button" class="filter-btn" data-animal="Monkey">
+            Monkeys
+          </button>
+          <button type="button" class="filter-btn" data-animal="Hippo">
+            Hippo
+          </button>
+          <button type="button" class="filter-btn" data-animal="Shark">
+            Shark
+          </button>
+          <button type="button" class="filter-btn" data-animal="Rhino">
+            Rhino
+          </button>
+          <button type="button" class="filter-btn" data-animal="Sea Turtle">
+            Sea Turtle
+          </button>
+        </div>
+
+        <!-- Display the table passed from Flask -->
+        <div id="animals-table-container">
+          {{ table_html | safe }}
+          <!-- The safe filter ensures that HTML is rendered -->
+        </div>
+      </div>
     </div>
+    <!-- JS file to process the animal table query -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Function to fetch filtered animals
+        function fetchFilteredAnimals(animalType) {
+          fetch("/filter_animals", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ animal_type: animalType }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              document.getElementById("animals-table-container").innerHTML =
+                data.table_html;
+            })
+            .catch((error) => console.error("Error:", error));
+        }
+
+        // Event listener for filter buttons
+        document.querySelectorAll(".filter-btn").forEach((button) => {
+          button.addEventListener("click", function () {
+            const animalType = this.dataset.animal;
+            fetchFilteredAnimals(animalType);
+          });
+        });
+
+        // Event listener for "All" button (must be outside the loop)
+        document
+          .getElementById("all-button")
+          .addEventListener("click", function () {
+            fetchFilteredAnimals(""); // Empty string to fetch all animals
+          });
+      });
+    </script>
+
     <footer class="home-footer">
       <h2 class="home-footer-h2">Follow Us On Social Media</h2>
       <!-- Social media icon section -->

@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Oakland University's Crazy Critters</title>
-    <link rel="stylesheet" href="/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='../static/style.css')}}"
+    />
     <link
       href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
       rel="stylesheet"
@@ -19,11 +22,11 @@
         <a href="./employees.html">Employees</a>
         <a href="./animals.html">Animals</a>
         <a href="./membership.html">Memberships</a>
-        <a href="./events.html">Guests</a>
+        <a href="./guests.html">Guests</a>
         <a href="./inventory.html">Inventory</a>
         <a href="./events.html">Events</a>
-        <a href="./Habitats.html">Habitats</a>
-        <a href="./event-attendance.html">EventAttendance</a>
+        <a href="./habitats.html">Habitats</a>
+        <a href="./event_attendance.html">EventAttendance</a>
         <button>Visit Us</button>
       </div>
       <!-- end of header section -->
@@ -48,7 +51,7 @@
           memories that will last a lifetime.
         </p>
         <img
-          src="/assets/animal-city-zoo-zoo-ai-generated-photo.jpg"
+          src="{{ url_for('static', filename='../static/animal-city-zoo-zoo-ai-generated-photo.jpg')}}"
           alt="Picture of a Zoo"
         />
         <!-- End of main section -->
@@ -64,7 +67,7 @@
       <a href="#"><i class="bx bxl-twitter"></i></a>
       <a href="#"><i class="bx bxl-reddit"></i></a>
       <!-- End of footer section  -->
-       <!-- End of home page styling -->
+      <!-- End of home page styling -->
     </footer>
   </body>
 </html>
