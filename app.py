@@ -13,7 +13,7 @@ def query_table(table_name, animal_type = None):
         conn = psycopg2.connect(
             dbname="Zoo",
             user="postgres",
-            password="mike12189",
+            password="334Maria", # Angelina's Password
             host="localhost",
             port="5432"
         )
