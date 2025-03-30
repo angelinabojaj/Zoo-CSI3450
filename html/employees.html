@@ -26,22 +26,62 @@
         <button>Visit Us</button>
       </div>
     </header>
-
-    <h2>Title Placeholder</h2>
-    
+    <h2>Our Wonderful Zookeepers</h2>
     <div class="main">
-      <div class="text-placeholder">
-        <p>Text Placeholder</p>
-      </div>
+      <p>
+        Meet our wonderful staff who diligently work to keep our animals happy and our zoo running!
+      </p>
       <div class="table-container">
-        <h1>{{ title }}</h1> 
-        <hr>
+        <div class="table-btns">
+          <button class="filter-btn" data-sort="employeeid" id="employeeid">
+            Employee ID
+          </button>
+          <button type="button" class="filter-btn" data-sort="name">
+            Name
+          </button>
+          <button type="button" class="filter-btn" data-sort="pay">
+            Pay
+          </button>
+          <button type="button" class="filter-btn" data-sort="job">
+            Job
+          </button>
+        </div>
+
         <!-- Display the table passed from Flask -->
-        <div>
-          {{ table_html | safe }}  <!-- Table passed from Flask -->
+        <div id="employees_table">
+          {{ table_html | safe }}
+          <!-- The safe filter ensures that HTML is rendered -->
         </div>
       </div>
     </div>
+    <!-- JS file to process the animal table query -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Function to fetch filtered animals
+        function sortTable(sortParameter) {
+          fetch("/employee_table_sort", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ sort_parameter: sortParameter }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              document.getElementById("employees_table").innerHTML =
+                data.table_html;
+            })
+            .catch((error) => console.error("Error:", error));
+        }
+
+        // Event listener for filter buttons
+        document.querySelectorAll(".filter-btn").forEach((button) => {
+          button.addEventListener("click", function () {
+            const sortP = this.dataset.sort;
+            sortTable(sortP);
+          });
+        });
+
+      });
+    </script>
 
     <footer class="home-footer">
       <h2 class="home-footer-h2">Follow Us On Social Media</h2>
