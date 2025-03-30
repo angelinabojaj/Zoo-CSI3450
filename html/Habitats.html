@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Employees Page</title>
+    <title>Habitats Page</title>
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename='../static/events.css')}}"
+      href="{{ url_for('static', filename='../static/habitats.css')}}"
     />
     <link
       href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
@@ -29,22 +29,63 @@
       </div>
     </header>
 
-    <h2>Title Placeholder</h2>
-
+    <h2>Habitats of the Zoo</h2>
     <div class="main">
-      <div class="text-placeholder">
-        <p>Text Placeholder</p>
-      </div>
+      <p>
+        Here you can view all of our habitats and the various staff that work at them. Make sure to pay them a visit!
+      </p>
       <div class="table-container">
-        <h1>{{ title }}</h1>
-        <hr />
+        <div class="table-btns">
+          <button class="filter-btn" data-sort="habitatid" id="habitatid">
+            Habitat ID
+          </button>
+          <button type="button" class="filter-btn" data-sort="name">
+            Habitat Name
+          </button>
+          <button type="button" class="filter-btn" data-sort="caretakername">
+            Caretaker Name
+          </button>
+          <button type="button" class="filter-btn" data-sort="caretakerinfo">
+            Caretaker Info
+          </button>
+        </div>
+
         <!-- Display the table passed from Flask -->
-        <div>
+        <div id="habitat_table">
           {{ table_html | safe }}
-          <!-- Table passed from Flask -->
+          <!-- The safe filter ensures that HTML is rendered -->
         </div>
       </div>
     </div>
+    <!-- JS file to process the animal table query -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Function to fetch filtered animals
+        function sortTable(sortParameter) {
+          fetch("/habitat_table_sort", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ sort_parameter: sortParameter }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              document.getElementById("habitat_table").innerHTML =
+                data.table_html;
+            })
+            .catch((error) => console.error("Error:", error));
+        }
+
+        // Event listener for filter buttons
+        document.querySelectorAll(".filter-btn").forEach((button) => {
+          button.addEventListener("click", function () {
+            const sortP = this.dataset.sort;
+            sortTable(sortP);
+          });
+        });
+
+      });
+    </script>
+
     <footer class="home-footer">
       <h2 class="home-footer-h2">Follow Us On Social Media</h2>
       <!-- Social media icon section -->
