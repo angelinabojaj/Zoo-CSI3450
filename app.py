@@ -5,25 +5,32 @@ import psycopg2
 app = Flask(__name__, template_folder='html')
 
 # Function taking the name of a table and returning a dataframe with its contents
-def query_table(table_name, animal_type = None):
+def query_table(table_name, animal_type = None, employees_sort = None):
     conn = None
     cursor = None
     try:
         # Database connection
         conn = psycopg2.connect(
-            dbname="Zoo",
+            dbname="postgres",
             user="postgres",
-            password="334Maria", # Angelina's Password
+            password="admin", 
             host="localhost",
             port="5432"
         )
         cursor = conn.cursor()
-
+        if employees_sort == None:
+                print("No employees")
         if animal_type:
             query = f"SELECT * FROM {table_name} WHERE animal = %s;"
             cursor.execute(query, (animal_type,))
+        elif employees_sort:
+            query = f"SELECT * FROM {table_name} ORDER BY {employees_sort};"
+            cursor.execute(query)
         else:
+            query = f"SELECT * FROM {table_name};"
             cursor.execute(f"SELECT * FROM {table_name};")
+
+        
             
         data = cursor.fetchall()
 
@@ -53,6 +60,50 @@ def query_table(table_name, animal_type = None):
             cursor.close()
         if conn:
             conn.close()
+
+def table_join(table_name1, table_name2):
+    conn = None
+    cursor = None
+    try:
+        # Database connection
+        conn = psycopg2.connect(
+            dbname="postgres",
+            user="postgres",
+            password="admin", 
+            host="localhost",
+            port="5432"
+        )
+        cursor = conn.cursor()
+        if table_name1 == "habitats" and table_name2 == "employees":
+            query = f"select habitats.habitatid, habitats.name, habitats.caretakername, employees.employeeid, employees.address, employees.job, employees.pay from  habitats left join employees on habitats.caretakername = employees.name order by habitatid;"
+            cursor.execute(query)   
+            
+        data = cursor.fetchall()
+        # Execute query to get data from the specified table
+        # cursor.execute(f"SELECT * FROM {table_name};")
+        # data = cursor.fetchall()
+
+        # check for data retrieval
+        if not data:
+            return None
+
+        # Create DataFrame from fetched data
+        columns = [desc[0] for desc in cursor.description]  # get and apply column names
+        df = pd.DataFrame(data, columns=columns)
+
+        return df
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+
+    finally:
+        # Ensure connection is closed
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
 @app.route('/')
 def home():
     return render_template('index.html') # index page
@@ -67,7 +118,7 @@ def employees():
         return render_template('error.html', error_message="No data found in the 'employees' table.")
 
     # Convert the DataFrame to an HTML table
-    employees_html = employees_df.to_html(classes='table table-bordered table-striped')
+    employees_html = employees_df.to_html(classes='table table-bordered table-striped', index=False)
 
     # Return the HTML table embedded in the page's template
     return render_template('employees.html', table_html=employees_html, title="Employees Table")
@@ -106,6 +157,48 @@ def filter_animals():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
+@app.route('/employee_table_sort', methods=['POST'])
+def employee_table_sort():
+    try:
+        data = request.get_json()
+        if not data or "sort_parameter" not in data:
+            return jsonify({'table_html': "<p>Error: Missing sort type.</p>"}), 400
+
+        sort_parameter = data["sort_parameter"]
+        print(sort_parameter)
+        filtered_df = query_table('employees', None, sort_parameter)
+
+        if filtered_df is None or filtered_df.empty:
+            return jsonify({'table_html': "<p>No Employees found for this type.</p>"})
+
+        table_html = filtered_df.to_html(classes='table table-bordered', index=False)
+        return jsonify({'table_html': table_html})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+@app.route('/habitat_table_sort', methods=['POST'])
+def habitat_table_sort():
+    try:
+        data = request.get_json()
+        if not data or "sort_parameter" not in data:
+            return jsonify({'table_html': "<p>Error: Missing sort type.</p>"}), 400
+
+        sort_parameter = data["sort_parameter"]
+        print(sort_parameter)
+        if(sort_parameter =="caretakerinfo"):
+            filtered_df = table_join("habitats","employees")
+        else:
+            filtered_df = query_table('habitats', None, sort_parameter)
+
+        if filtered_df is None or filtered_df.empty:
+            return jsonify({'table_html': "<p>No Employees found for this type.</p>"})
+
+        table_html = filtered_df.to_html(classes='table table-bordered', index=False)
+        return jsonify({'table_html': table_html})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/events.html')
 def events():
@@ -158,7 +251,7 @@ def habitats():
         return render_template('error.html', error_message="No data found in the 'habitats' table.")
 
     # Convert the DataFrame to an HTML table
-    habitats_html = habitats_df.to_html(classes='table table-bordered')
+    habitats_html = habitats_df.to_html(classes='table table-bordered',index=False)
 
     # Return the HTML table embedded in the page's template
     return render_template('habitats.html', table_html=habitats_html, title="Habitats Table")
