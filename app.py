@@ -108,6 +108,10 @@ def table_join(table_name1, table_name2):
 def home():
     return render_template('index.html') # index page
 
+@app.route('/index.html')
+def index():
+    return render_template('index.html') # index page
+
 
 @app.route('/employees.html')
 def employees():
