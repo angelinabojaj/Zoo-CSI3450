@@ -29,17 +29,19 @@
       </div>
     </header>
 
-    <h2>Title Placeholder</h2>
-
+    <h2>Events!</h2>
     <div class="main">
-      <div class="text-placeholder">
-        <p>Text Placeholder</p>
+        <p>
+          These are the current events happening at the Crazy Critter Zoo. Feel free to check out whats going on!
+          All events are free with the purchase of a ticket. For quicker wait times an additional pass is offered as an
+          upcharge of $5.00 per ticket holder.
+        </p>
       </div>
       <div class="table-container">
         <h1>{{ title }}</h1>
         <hr />
         <!-- Display the table passed from Flask -->
-        <div>
+        <div id = "event-table-container">
           {{ table_html | safe }}
           <!-- Table passed from Flask -->
         </div>

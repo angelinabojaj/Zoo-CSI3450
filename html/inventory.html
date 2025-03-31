@@ -9,6 +9,7 @@
       href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
       rel="stylesheet"
     />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
   <body>
     <header class="header">
@@ -28,23 +29,39 @@
 
     <h2>Current Inventory</h2>
     <div class="main">
-      <div class="main">
         <p>
-          Consider leaving a donation to help fund the Crazy Critters Zoo. It is currently in need of the following supplies. 
-          We want to be transparent with our costs and were everything is stored to our donating patrons. 
-          Here at Crazy Critters Zoo, we appreciate everything you give us! Thank you so much!
+          Consider leaving a donation to help fund the Crazy Critters Zoo. 
+          It is currently in need of the following supplies. 
+          We want to be transparent with our costs and were everything 
+          is stored to our donating patrons. Here at Crazy Critters Zoo, 
+          we appreciate everything you give us! Thank you so much!
         </p>
-      </div>
-      <div class="table-container">
-        <h1>Inventory</h1> 
+        <div class="table-container">
+            <div class = "inventory-table-buttons">
+              <button class "filter-button" data-inventory="*" id="all-button"> View All </button>
+              <button type="button" class "filter-button" data-inventory="Low Cost Items"> Low Cost Items </button>
+              <button type="button" class "filter-button" data-inventory="High Cost Items"> High Cost Items </button>
+              <button type="button" class "filter-button" data-inventory="Low Inventory"> Low Inventory </button>
+            </div>
+        </div>
         <hr>
         <!-- Display the table passed from Flask -->
-        <div>
+        <div id ="inventory-table-container">
           {{ table_html | safe }}  <!-- Table passed from Flask -->
         </div>
       </div>
     </div>
 
+    <script>
+    // Event listener for filter buttons
+    document.querySelectorAll(".filter-button").forEach((button) => {
+      button.addEventListener("click", function () {
+        const animalType = this.dataset.animal;
+        fetchFilteredAnimals(animalType);
+        });
+      });
+
+    </script>
     <footer class="home-footer">
       <h2 class="home-footer-h2">Follow Us On Social Media</h2>
       <!-- Social media icon section -->

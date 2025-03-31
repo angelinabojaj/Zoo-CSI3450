@@ -61,9 +61,22 @@ h2{
 }
 .main  {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
 }
+
+.main p {
+  width: 1100px;
+  font-size: 20px;
+  line-height: 40px;
+  padding-left: 30px;
+}
+
+.main img {
+  width: 600px;
+  height: 300px;
+}
+
 .home-footer {
   display: flex;
   justify-content: space-between;
@@ -80,4 +93,38 @@ h2{
   padding-right: 30px;
   text-decoration: none;
   color: var(--primary-font-color);
+}
+
+.table-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+}
+.table-container .table-btns .filter-btn {
+  margin-right: 17px;
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+.table {
+  background-color: white;
+  margin-right: 20px;
+  border: none;
+  width: 550px;
+}
+
+.table tr,
+td,
+th {
+  border: none;
+}
+
+.table th {
+  padding-right: 30px;
+  margin-bottom: 15px;
+}
+
+.table tr {
+  margin-bottom: 15px;
 }

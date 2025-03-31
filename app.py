@@ -11,9 +11,9 @@ def query_table(table_name, animal_type = None, employees_sort = None):
     try:
         # Database connection
         conn = psycopg2.connect(
-            dbname="postgres",
+            dbname="Zoo", # Change To Your Database Name
             user="postgres",
-            password="admin", 
+            password="334Maria", # Change To Your Password
             host="localhost",
             port="5432"
         )
@@ -65,9 +65,9 @@ def table_join(table_name1, table_name2):
     try:
         # Database connection
         conn = psycopg2.connect(
-            dbname="postgres",
+            dbname="Zoo", # Change To Your Database Name
             user="postgres",
-            password="admin", 
+            password="334Maria", # Change To Your Password
             host="localhost",
             port="5432"
         )
@@ -105,11 +105,6 @@ def table_join(table_name1, table_name2):
 @app.route('/')
 def home():
     return render_template('index.html') # index page
-
-@app.route('/index.html')
-def index():
-    return render_template('index.html') # index page
-
 
 @app.route('/employees.html')
 def employees():
