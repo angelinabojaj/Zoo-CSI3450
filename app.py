@@ -18,8 +18,6 @@ def query_table(table_name, animal_type = None, employees_sort = None):
             port="5432"
         )
         cursor = conn.cursor()
-        if employees_sort == None:
-                print("No employees")
         if animal_type:
             query = f"SELECT * FROM {table_name} WHERE animal = %s;"
             cursor.execute(query, (animal_type,))
