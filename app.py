@@ -13,7 +13,7 @@ def query_table(table_name, animal_type = None, employees_sort = None):
         conn = psycopg2.connect(
             dbname="Zoo", # Change To Your Database Name
             user="postgres",
-            password="334Maria", # Change To Your Password
+            password="mike12189", # Change To Your Password
             host="localhost",
             port="5432"
         )
@@ -67,7 +67,7 @@ def table_join(table_name1, table_name2):
         conn = psycopg2.connect(
             dbname="Zoo", # Change To Your Database Name
             user="postgres",
-            password="334Maria", # Change To Your Password
+            password="mike12189", # Change To Your Password
             host="localhost",
             port="5432"
         )
@@ -234,7 +234,7 @@ def guests():
         return render_template('error.html', error_message="No data found in the 'guests' table.")
 
     # Convert the DataFrame to an HTML table
-    guests_html = guests_df.to_html(classes='table table-bordered')
+    guests_html = guests_df.to_html(classes='table table-bordered',index=False)
 
     # Return the HTML table embedded in the page's template
     return render_template('guests.html', table_html=guests_html, title="Guests Table")
@@ -276,11 +276,96 @@ def membership():
         return render_template('error.html', error_message="No data found in the 'membership' table.")
 
     # Convert the DataFrame to an HTML table
-    membership_html = membership_df.to_html(classes='table table-bordered')
+    membership_html = membership_df.to_html(classes='table table-bordered',index=False)
 
     # Return the HTML table embedded in the page's template
     return render_template('membership.html', table_html=membership_html, title="Membership Table")
 
+@app.route('/get_guests_by_address', methods=['POST'])
+def get_guests_by_address():
+    data = request.json
+    address_keyword = data.get('address')
 
+    conn = psycopg2.connect(
+            dbname="Zoo", # Change To Your Database Name
+            user="postgres",
+            password="mike12189", # Change To Your Password
+            host="localhost",
+            port="5432"
+        )
+    cur = conn.cursor()
+    
+    # Use ILIKE to allow case-insensitive partial matching
+    query = "SELECT guestid, name, address FROM guests WHERE address ILIKE %s;"
+    cur.execute(query, (f'%{address_keyword}%',))
+    data = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+      # Convert to DataFrame
+    df = pd.DataFrame(data, columns=["Guest ID", "Name", "Address"])
+
+    # Convert DataFrame to HTML table with proper styling
+    table_html = df.to_html(classes='table table-bordered', index=False)
+
+
+    # Convert query result to JSON
+    return jsonify([{"guestid": row[0], "name": row[1], "address": row[2]} for row in data])
+
+
+
+@app.route('/filter_memberships', methods=['POST'])
+def filter_memberships():
+    data = request.get_json()  # Get the JSON from the request
+    date_filter = data.get('date_filter')
+
+    # Construct the SQL query based on the filter
+    if date_filter == 'after_2025':
+        query = "SELECT * FROM memberships WHERE signupdate::DATE > '2025-01-01';"
+    elif date_filter == 'before_2025':
+        query = "SELECT * FROM memberships WHERE signupdate::DATE <= '2025-01-01';"
+    else:
+        return jsonify({"error": "Invalid filter type"}), 400
+
+    print(f"Executing Query: {query}")  # Debugging print statement
+
+    # Connect to the database and execute the query
+    try:
+        conn = psycopg2.connect(
+            dbname="Zoo",
+            user="postgres",
+            password="mike12189",
+            host="localhost",
+            port="5432"
+        )
+        cur = conn.cursor()
+
+        cur.execute(query)
+        data = cur.fetchall()  # Fetch all results
+        columns = [desc[0] for desc in cur.description]  # Get column names
+
+        cur.close()
+        conn.close()
+
+        # Check if data exists
+        if not data:
+            print("Query returned no results.")  # Debugging print statement
+            return jsonify({'table_html': "<p>No memberships found.</p>"})
+
+        # Convert to DataFrame
+        result_df = pd.DataFrame(data, columns=columns)
+
+        print("Query Output (DataFrame):")  # Debugging print statement
+        print(result_df)
+
+        # Convert the DataFrame to an HTML table
+        table_html = result_df.to_html(classes='table table-bordered', index=False)
+
+        return jsonify({'table_html': table_html})
+
+    except Exception as e:
+        print(f"Database Error: {e}")
+        return jsonify({"error": str(e)}), 500
 if __name__ == '__main__':
     app.run(debug=True)

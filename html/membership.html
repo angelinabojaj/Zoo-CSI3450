@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Employees Page</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='../static/membership.css')}}" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='../static/membership.css')}}"
+    />
     <link
       href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
       rel="stylesheet"
@@ -26,21 +29,74 @@
       </div>
     </header>
 
-    <h2>Title Placeholder</h2>
-    
+    <h2>View other zoo members!</h2>
+
     <div class="main">
       <div class="text-placeholder">
-        <p>Text Placeholder</p>
+        <p>
+          Interested in becoming a member? Take a look at all of our other
+          members and see if you know anyone! If not, use your membership to
+          see animals and make friends is commonplace!
+        </p>
       </div>
       <div class="table-container">
-        <h1>{{ title }}</h1> 
-        <hr>
+        <div class="table-btns">
+          <button id="after_2025" class="filter-button">
+            Signed Up After 2025
+          </button>
+          <button id="before_2025" class="filter-button">
+            Signed Up Before 2025
+          </button>
+        </div>
         <!-- Display the table passed from Flask -->
-        <div>
-          {{ table_html | safe }}  <!-- Table passed from Flask -->
+        <div id="membershipTable">
+          {{ table_html | safe }}
+          <!-- Table passed from Flask -->
         </div>
       </div>
     </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Select the buttons
+        document
+          .getElementById("after_2025")
+          .addEventListener("click", function () {
+            sendFilterRequest("after_2025");
+          });
+
+        document
+          .getElementById("before_2025")
+          .addEventListener("click", function () {
+            sendFilterRequest("before_2025");
+          });
+
+        function sendFilterRequest(filterType) {
+          fetch("/filter_memberships", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ date_filter: filterType }), // Sends 'after_2025' or 'before_2025'
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.table_html) {
+                document.getElementById("membershipTable").innerHTML =
+                  data.table_html;
+              } else {
+                document.getElementById("membershipTable").innerHTML =
+                  "<p>No memberships found.</p>";
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              document.getElementById("membershipTable").innerHTML =
+                "<p>Error loading data.</p>";
+            });
+        }
+      });
+    </script>
 
     <footer class="home-footer">
       <h2 class="home-footer-h2">Follow Us On Social Media</h2>

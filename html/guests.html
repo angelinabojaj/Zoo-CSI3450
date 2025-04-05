@@ -29,15 +29,25 @@
       </div>
     </header>
 
-    <h2>Title Placeholder</h2>
+    <h2>Register as a Guest! View other zoo goers!</h2>
 
     <div class="main">
       <div class="text-placeholder">
-        <p>Text Placeholder</p>
+        <p>
+          We always want to see new faces around the zoo, and we want to get to
+          know you better! In order to visit our zoo, we need all guests to
+          register so we have basic information if we ever need it.
+        </p>
       </div>
       <div class="table-container">
-        <h1>{{ title }}</h1>
-        <hr />
+        <div class="table-btns">
+          <button class="filter-btn" id="vandenburg">Vandenburg</button>
+          <button type="button" class="filter-btn">Hannah</button>
+          <button type="button" class="filter-btn">Dodge</button>
+          <button type="button" class="filter-btn">North Foundation</button>
+          <button type="button" class="filter-btn">Oakland Center</button>
+          <button type="button" class="filter-btn">Hamlin</button>
+        </div>
         <!-- Display the table passed from Flask -->
         <div>
           {{ table_html | safe }}
@@ -45,6 +55,42 @@
         </div>
       </div>
     </div>
+
+    <script>
+      document.querySelectorAll(".filter-btn").forEach((button) => {
+        button.addEventListener("click", function () {
+          let address = this.innerText; // Button text as address keyword
+
+          fetch("/get_guests_by_address", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ address: address }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              let tableBody = document.querySelector("tbody");
+              tableBody.innerHTML = ""; // Clear existing table content
+
+              if (data.length > 0) {
+                data.forEach((row) => {
+                  let tr = document.createElement("tr");
+                  tr.innerHTML = `
+                            <td>${row.guestid}</td>
+                            <td>${row.name}</td>
+                            <td>${row.address}</td>
+                        `;
+                  tableBody.appendChild(tr);
+                });
+              } else {
+                tableBody.innerHTML = `<tr><td colspan="3">No guests found.</td></tr>`;
+              }
+            });
+        });
+      });
+    </script>
+
     <footer class="home-footer">
       <h2 class="home-footer-h2">Follow Us On Social Media</h2>
       <!-- Social media icon section -->
