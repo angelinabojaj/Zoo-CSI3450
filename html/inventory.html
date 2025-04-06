@@ -45,7 +45,7 @@
         </div>
         <hr>
         <!-- Display the table passed from Flask -->
-        <div id ="inventory_Table">
+        <div id ="inventory-table-container">
           {{ table_html | safe }}  <!-- Table passed from Flask -->
         </div>
       </div>
@@ -83,26 +83,27 @@
           })
 
           function sendFilterRequest(filterType){
+            console.log("Sending Filter Type: ", filterType);
             fetch("/inventory_filter", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({inventory_filter: filterType}),
+              body: JSON.stringify({ inventory_filter: filterType}),
             })
             .then((response) => response.json())
             .then((data) => {
               if (data.table_html) {
-                document.getElementById("inventory_Table").innerHTML =
+                document.getElementById("inventory-table-container").innerHTML =
                   data.table_html;
               } else {
-                document.getElementById("inventory_Table").innerHTML =
-                  "<p>No inventory found.</p>";
+                document.getElementById("inventory-table-container").innerHTML =
+                  "<p>No Inventory found - HTML FAILED.</p>";
               }
             })
             .catch((error) => {
               console.error("Error:", error);
-              document.getElementById("inventory_Table").innerHTML =
+              document.getElementById("inventory-table-container").innerHTML =
                 "<p>Error loading data - INVENTORY SPECIFICALLY.</p>";
             });
           }

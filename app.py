@@ -264,6 +264,72 @@ def inventory():
     # Return the HTML table embedded in the page's template
     return render_template('inventory.html', table_html=inventory_html, title="Inventory Table")
 
+
+# Inventory.html
+# Low Cost, High Cost, & Low Inventory
+    # Angelina Bojaj
+@app.route('/inventory_filter', methods = ['POST'])
+def inventory_filter():
+    print("Inventory Filter Started To Work")
+    
+    data = request.get_json()  # Get the JSON from the request
+    print(f"Received Data From Input: {data}")
+    inventory_filter = data.get('inventory_filter')
+    
+    # Construct the SQL query based on the filter
+    if inventory_filter == 'low_cost':
+        query = "SELECT * FROM inventory ORDER BY price ASC"
+    elif inventory_filter == 'high_cost':
+        query = "SELECT * FROM inventory ORDER BY price DESC"
+    elif inventory_filter == 'low_inventory':
+        query = "SELECT * FROM inventory WHERE quantity < 1000"
+    else:
+        return jsonify({"error": "Invalid filter type"}), 400
+
+    print(f"Executing Query: {query}")  # Debugging print statement
+
+    # Connect to the database and execute the query
+    try:
+        conn = psycopg2.connect(
+            dbname="Zoo", # Change To Your Database Name
+            user="postgres",
+            password="334Maria",# Change To Your Password
+            host="localhost",
+            port="5432"
+        )
+        cur = conn.cursor()
+
+        cur.execute(query)
+        data = cur.fetchall()  # Fetch all results
+        columns = [desc[0] for desc in cur.description]  # Get column names
+
+        cur.close()
+        conn.close()
+
+        # Check if data exists
+        if not data:
+            print("Query returned no results.")  # Debugging print statement
+            return jsonify({'table_html': "<p>No Inventory found.</p>"})
+
+        # Convert to DataFrame
+        result_df = pd.DataFrame(data, columns=columns)
+
+        print("Query Output (DataFrame):")  # Debugging print statement
+        print(result_df)
+
+        # Convert the DataFrame to an HTML table
+        table_html = result_df.to_html(classes='table table-bordered', index=False)
+
+        return jsonify({'table_html': table_html})
+
+    except Exception as e:
+        print(f"Database Error: {e}")
+        return jsonify({"error": str(e)}), 500
+    
+if __name__ == '__main__':
+    print("Inventory Filter Finished Working")
+    app.run(debug=True)
+
 @app.route('/membership.html')
 def membership():
     # Query data from the 'membership' table
@@ -364,64 +430,4 @@ def filter_memberships():
         print(f"Database Error: {e}")
         return jsonify({"error": str(e)}), 500
 if __name__ == '__main__':
-    app.run(debug=True)
-
-@app.route('/inventory_filter', methods = ['POST'])
-def inventory_filter():
-    print("Inventory Filter Started To Work")
-    
-    data = request.get_json()  # Get the JSON from the request
-    inventory_filter = data.get('inventory_filter')
-
-    # Construct the SQL query based on the filter
-    if inventory_filter == 'low_cost':
-        query = "SELECT * FROM inventory ORDER BY price ASC"
-    elif inventory_filter == 'high_cost':
-        query = "SELECT * FROM inventory ORDER BY price DESC"
-    elif inventory_filter == 'low_inventory':
-        query = "SELECT * FROM inventory WHERE quantity <= 1000"
-    else:
-        return jsonify({"error": "Invalid filter type"}), 400
-
-    print(f"Executing Query: {query}")  # Debugging print statement
-
-    # Connect to the database and execute the query
-    try:
-        conn = psycopg2.connect(
-            dbname="Zoo", # Change To Your Database Name
-            user="postgres",
-            password="334Maria",# Change To Your Password
-            host="localhost",
-            port="5432"
-        )
-        cur = conn.cursor()
-
-        cur.execute(query)
-        data = cur.fetchall()  # Fetch all results
-        columns = [desc[0] for desc in cur.description]  # Get column names
-
-        cur.close()
-        conn.close()
-
-        # Check if data exists
-        if not data:
-            print("Query returned no results.")  # Debugging print statement
-            return jsonify({'table_html': "<p>No Inventory found.</p>"})
-
-        # Convert to DataFrame
-        result_df = pd.DataFrame(data, columns=columns)
-
-        print("Query Output (DataFrame):")  # Debugging print statement
-        print(result_df)
-
-        # Convert the DataFrame to an HTML table
-        table_html = result_df.to_html(classes='table table-bordered', index=False)
-
-        return jsonify({'table_html': table_html})
-
-    except Exception as e:
-        print(f"Database Error: {e}")
-        return jsonify({"error": str(e)}), 500
-if __name__ == '__main__':
-    print("Inventory Filter Finished Working")
     app.run(debug=True)
