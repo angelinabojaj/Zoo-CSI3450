@@ -38,29 +38,77 @@
         </p>
         <div class="table-container">
             <div class = "inventory-table-buttons">
-              <button type="button" class "filter-button"> Low Cost Items </button>
-              <button type="button" class "filter-button"> High Cost Items </button>
-              <button type="button" class "filter-button"> Low Inventory </button>
+              <button id = "low_cost" class = "filter-button"> Low Cost Items </button>
+              <button id = "high_cost" class = "filter-button"> High Cost Items </button>
+              <button id = "low_inventory" class = "filter-button"> Low Inventory </button>
             </div>
         </div>
         <hr>
         <!-- Display the table passed from Flask -->
-        <div id ="inventory-table-container">
+        <div id ="inventory_Table">
           {{ table_html | safe }}  <!-- Table passed from Flask -->
         </div>
       </div>
     </div>
 
     <script>
-    // Event listener for filter buttons
-    document.querySelectorAll(".filter-button").forEach((button) => {
-      button.addEventListener("click", function () {
-        const animalType = this.dataset.animal;
-        fetchFilteredAnimals(animalType);
-        });
-      });
+      let filterType = null;
 
+      document.addEventListener("DOMContentLoaded", function() {
+        // Low Cost Button
+        document
+          .getElementById("low_cost")
+          .addEventListener("click", function (){
+            filterType = "low_cost";
+            console.log("Low Cost Button Clicked");
+            sendFilterRequest("low_cost");
+          })
+
+        // High Cost Button
+        document
+          .getElementById("high_cost")
+          .addEventListener("click", function (){
+            filterType = "high_cost";
+            console.log("High Cost Button Clicked");
+            sendFilterRequest("high_cost");
+          })
+        
+        // Low Inventory Button
+        document
+          .getElementById("low_inventory")
+          .addEventListener("click", function (){
+            filterType = "low_inventory";
+            console.log("Low Inventory Button Clicked");
+            sendFilterRequest("low_inventory");
+          })
+
+          function sendFilterRequest(filterType){
+            fetch("/inventory_filter", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({inventory_filter: filterType}),
+            })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.table_html) {
+                document.getElementById("inventory_Table").innerHTML =
+                  data.table_html;
+              } else {
+                document.getElementById("inventory_Table").innerHTML =
+                  "<p>No inventory found.</p>";
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              document.getElementById("inventory_Table").innerHTML =
+                "<p>Error loading data - INVENTORY SPECIFICALLY.</p>";
+            });
+          }
+      })
     </script>
+
     <footer class="home-footer">
       <h2 class="home-footer-h2">Follow Us On Social Media</h2>
       <!-- Social media icon section -->
