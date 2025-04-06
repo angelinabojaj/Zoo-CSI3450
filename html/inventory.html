@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Employees Page</title>
+    <title>Inventory Page</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='../static/inventory.css')}}" />
     <link
       href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
@@ -38,10 +38,9 @@
         </p>
         <div class="table-container">
             <div class = "inventory-table-buttons">
-              <button class "filter-button" data-inventory="*" id="all-button"> View All </button>
-              <button type="button" class "filter-button" data-inventory="Low Cost Items"> Low Cost Items </button>
-              <button type="button" class "filter-button" data-inventory="High Cost Items"> High Cost Items </button>
-              <button type="button" class "filter-button" data-inventory="Low Inventory"> Low Inventory </button>
+              <button type="button" class "filter-button"> Low Cost Items </button>
+              <button type="button" class "filter-button"> High Cost Items </button>
+              <button type="button" class "filter-button"> Low Inventory </button>
             </div>
         </div>
         <hr>

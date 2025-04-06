@@ -13,7 +13,7 @@ def query_table(table_name, animal_type = None, employees_sort = None):
         conn = psycopg2.connect(
             dbname="Zoo", # Change To Your Database Name
             user="postgres",
-            password="mike12189", # Change To Your Password
+            password="334Maria", # Change To Your Password
             host="localhost",
             port="5432"
         )
@@ -29,10 +29,7 @@ def query_table(table_name, animal_type = None, employees_sort = None):
             cursor.execute(f"SELECT * FROM {table_name};")
 
         
-            
         data = cursor.fetchall()
-
-        
 
         # Execute query to get data from the specified table
         # cursor.execute(f"SELECT * FROM {table_name};")
@@ -67,7 +64,7 @@ def table_join(table_name1, table_name2):
         conn = psycopg2.connect(
             dbname="Zoo", # Change To Your Database Name
             user="postgres",
-            password="mike12189", # Change To Your Password
+            password="334Maria", # Change To Your Password
             host="localhost",
             port="5432"
         )

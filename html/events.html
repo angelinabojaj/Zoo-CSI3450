@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Employees Page</title>
+    <title>Events Page</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='../static/events.css')}}"
@@ -38,15 +38,14 @@
         </p>
       </div>
       <div class="table-container">
-        <h1>{{ title }}</h1>
-        <hr />
         <!-- Display the table passed from Flask -->
-        <div id = "event-table-container">
+        <div id = "event-table">
           {{ table_html | safe }}
           <!-- Table passed from Flask -->
         </div>
       </div>
     </div>
+
     <footer class="home-footer">
       <h2 class="home-footer-h2">Follow Us On Social Media</h2>
       <!-- Social media icon section -->
