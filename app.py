@@ -328,7 +328,7 @@ def inventory_filter():
     
 if __name__ == '__main__':
     print("Inventory Filter Finished Working")
-    app.run(debug=True)
+    # app.run(debug=True) # Don't add back in
 
 @app.route('/membership.html')
 def membership():
