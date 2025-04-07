@@ -22,34 +22,30 @@
         <a href="./inventory.html">Inventory</a>
         <a href="./events.html">Events</a>
         <a href="./habitats.html">Habitats</a>
-        <a href="./event_attendance.html">EventAttendance</a>
+        <a href="./event_attendance.html">Donations</a>
         <button>Visit Us</button>
       </div>
     </header>
 
-    <h2>Title Placeholder</h2>
-    
-    <div class="main">
-      <div class="text-placeholder">
-        <p>Text Placeholder</p>
-
-        <!-- Buttons -->
-         <div class ="event-attedance-buttons">
-          <button class "filter-button" data-inventory="*" id="all-button"> View All </button>
-          <button type="button" class "filter-button" data-inventory="EventID"> EventID </button>
-          <button type="button" class "filter-button" data-inventory="GuestID"> GuestID </button>
-
-         </div>
+    <div class="donation-description">
+      <h1 class="donation-description-heading">Donation</h1>
+      <main>
+        <!-- Description of our website -->
+        <p class="home-description-paragraph">
+          Get up close with exotic creatures from across the globe, wander
+          through lush landscapes, and embark on thrilling safari experiences.
+          Meet our feathered friends in the interactive aviary, where colorful
+          parrots and majestic eagles soar overhead. Visit the reptile kingdom
+          and come face-to-face with slithering serpents, giant tortoises, and
+          scaly surprises! More than just a zoo, Crazy Critters is a sanctuary
+          for conservation and education, helping protect endangered species and
+          inspire future wildlife champions. Fun for all ages! Whether you're
+          feeding a gentle giraffe, watching a playful penguin parade, or
+          hopping on a zoo train ride, there's something for everyone to enjoy!
+          Plan Your Visit Today! Get ready for a day of adventure, laughter, and
+          memories that will last a lifetime.
+        </p>
       </div>
-      <div class="table-container">
-        <h1>{{ title }}</h1> 
-        <hr>
-        <!-- Display the table passed from Flask -->
-        <div>
-          {{ table_html | safe }}  <!-- Table passed from Flask -->
-        </div>
-      </div>
-    </div>
 
     <footer class="home-footer">
       <h2 class="home-footer-h2">Follow Us On Social Media</h2>
