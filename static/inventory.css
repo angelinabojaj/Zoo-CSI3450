@@ -64,7 +64,8 @@ h2 {
 .main {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  margin: 20px;
 }
 
 .main p {
@@ -72,6 +73,7 @@ h2 {
   font-size: 20px;
   line-height: 40px;
   padding-left: 30px;
+  
 }
 
 .main img {
@@ -129,4 +131,8 @@ th {
 
 .table tr {
   margin-bottom: 15px;
+}
+
+.inventory-table-btns{
+  margin-bottom: 20px;
 }
